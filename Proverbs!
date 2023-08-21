@@ -1,0 +1,49 @@
+proverb ={}
+def proverb_dict():
+    proverb['a'] ='All that glitters is not gold.'
+    proverb['b'] ='Beauty is in the eye of beholder.'
+    proverb['c'] ='Cowards die many times before their death.'
+    proverb['d'] ='Don’t bite the hand that feeds you.'
+    proverb['e'] ='Every cloud has a silver lining.'
+    proverb['f'] ='Fall seven times; stand up eight.'
+    proverb['g'] ='Good things come to those who wait.'
+    proverb['h'] ='Honesty is the best policy.'
+    proverb['i'] ='If you want to go quickly, go alone. If you want to go far, go together.'
+    proverb['j'] ='Justice delayed is justice denied.'
+    proverb['k'] ='Kind words will unlock an iron door.'
+    proverb['l'] ='Laughter is the best medicine.'
+    proverb['m'] ='Make hay while the sun shines.'
+    proverb['n'] ='Never put off until tomorrow what you can do today.'
+    proverb['o'] ='One man’s junk is another man’s treasure.'
+    proverb['p'] ='Practice makes perfect.'
+    proverb['r'] ='Rome wasn’t built in a day.'
+    proverb['s'] ='Smooth seas do not make skillful sailors.'
+    proverb['t'] ='The grass is greener on the other side of fence.'
+    proverb['u'] ='Until the lions produce their own historian, the story of the hunt will glorify only the hunter.'
+    proverb['w'] ='When in Rome, do as the Romans do.'
+    proverb['y'] ='You can’t make an omelet without breaking eggs.'
+    
+    
+    
+def main():
+    proverb_dict()
+    no_letter_found = False
+    print("Proverbs.")
+    print("User will eneter a letter and this program will show the user a proverb staring with that letter.")
+    while True:
+        letter= input("Eneter a letter: ")
+        if letter=='':
+            break
+        for key in proverb:
+            if ( (key==letter) or (letter==key.upper())):
+                print("Proverb that starts with letter",letter,":",proverb[key])
+                no_letter_found = False
+                break
+            else:
+                no_letter_found =True
+    
+        if (no_letter_found ==True):
+            print("There is no proverb starts with letter",letter)
+       
+if __name__ == "__main__":
+    main()
