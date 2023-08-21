@@ -83,7 +83,7 @@ def main():
     player to guess and then play the game using that secret word.
     """
     secret_word = get_word()
-    print(secret_word)
+    
     play_game(secret_word,INITIAL_GUESSES)
 
 
