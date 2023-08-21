@@ -1,5 +1,7 @@
 # Code-in-place-projects
 this repository contains some projects of Code In Place 2023 submitted by Arju Manara Begum
+
+
 Babysnake!:
 In this assignment I made a baby version of the classic Atari game of Snake.
 Breakout!:
