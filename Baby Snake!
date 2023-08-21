@@ -1,0 +1,116 @@
+from graphics import Canvas
+import time
+import random
+    
+CANVAS_WIDTH = 400
+CANVAS_HEIGHT = 400
+SIZE = 20
+direction = [1,0]
+cordinate = [0,0]
+
+# if you make this larger, the game will go slower
+DELAY = 0.1 
+
+def main():
+    quit = False
+    canvas = Canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
+    #set_up_world
+    #create blue sqaure as player 
+    count = 0
+    player_x=0
+    player_y=0
+    color="blue"
+    player_rect = create_rect(canvas,player_x,player_y,color)
+    
+    #create red sqaure as goal
+   
+    cordinate = create_goal(canvas)
+    
+    canvas.create_text(5, 380, font_size = 12, text='Points:')
+    
+    #Animation
+  
+    while True:
+        detect_key_pressed(canvas)
+        # move object 20 pixel away from previous position        
+        player_x = player_x + SIZE * direction[0]
+        player_y = player_y + SIZE * direction[1]
+        canvas.moveto(player_rect, player_x, player_y)
+        
+        #check collision, if collsion occures then set goal to a new position and count score
+        right_x = cordinate[0]+SIZE
+        bottom_y = cordinate[1]+SIZE
+        objs = canvas.find_overlapping(cordinate[0], cordinate[1], right_x, bottom_y)
+        
+        if objs[0] == player_rect:
+            canvas.set_color(objs[1],"white")
+            cordinate = create_goal(canvas)
+            count = count_point(canvas,count)
+        
+        # if player is out of canvas, game over
+        quit=payer_out_of_canvas(player_x,player_y)
+        if quit:
+            break
+        time.sleep(DELAY)
+        
+def detect_key_pressed(canvas):
+    key = canvas.get_last_key_press()
+    if key == 'ArrowLeft':
+            direction[0] = -1
+            direction[1] = 0
+    if key == 'ArrowRight':
+            direction[0] = 1
+            direction[1] = 0
+    if key == 'ArrowUp':
+            direction[1] = -1
+            direction[0] = 0
+                
+    if key == 'ArrowDown':
+            direction[1] = 1
+            direction[0] = 0
+        
+
+def payer_out_of_canvas(left_x,top_y):
+    
+    if((left_x<0 or top_y<0) or((left_x+SIZE)>400 or (top_y+SIZE)>400)):
+        return True
+
+def count_point(canvas, count):
+    count += 1
+    #canvas.create_text(5, 380, font_size = 12, text='Points')
+    canvas.create_text(50, 380, text=" ",color="white")
+    text = str(count)
+    canvas.create_text(50, 380, text)
+    
+    return count
+    
+def create_goal(canvas):
+    #x,y of goal must be multiplies of 20[didvide a number by 20, subtract the remainder from 
+    #the number]
+    x= random.randint(0,CANVAS_WIDTH)
+    remainder = x % 20
+    x=x-remainder
+    y= random.randint(0,CANVAS_HEIGHT)
+    remainder = y % 20
+    y=y-remainder
+    xy_cordinate = [x,y]
+    
+    color="red"
+   
+    goal_rect = create_rect(canvas,x,y,color)
+    return xy_cordinate
+    
+    
+    
+def create_rect(canvas,x,y,color):
+    left_x= x
+    top_y=y
+    right_x = left_x+SIZE
+    bottom_y = top_y+SIZE
+    rect= canvas.create_rectangle(left_x, top_y, right_x, bottom_y,color)
+    return rect
+    
+        
+
+if __name__ == '__main__':
+    main()
