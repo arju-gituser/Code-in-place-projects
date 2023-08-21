@@ -1,0 +1,93 @@
+"""
+File: word_guess.py
+-------------------
+Fill in this comment.
+"""
+
+
+import random
+
+
+LEXICON_FILE = "Lexicon.txt"    # File to read word list from
+INITIAL_GUESSES = 8             # Max number of guesses per game
+
+
+def play_game(secret_word,INITIAL_GUESSES):
+    """
+    Add your code (remember to delete the "pass" below)
+    """
+    word_len = len(secret_word)
+    secret_word_chr_state='_'*word_len
+    while INITIAL_GUESSES > 0:
+        
+        found_letter = False
+            
+        #print(secret_word_chr_state)
+    
+        under_score=""
+    
+        for i in range(word_len):
+            under_score+="_ "
+        print("The word now looks like this: ",secret_word_chr_state)
+        print("You have "+ str(INITIAL_GUESSES) + " guesses left")
+        guessed_letter = input("Type a single letter here, then press enter: ")
+        #print(guessed_letter)
+    
+        for i in range(word_len):
+            lowercase_letter=ord(secret_word[i])
+            lowercase_letter=chr(lowercase_letter+32)
+            if ((guessed_letter==secret_word[i]) or (guessed_letter==lowercase_letter )):
+                found_letter = True
+                secret_word_chr_state=secret_word_chr_state[:i]+secret_word[i]+secret_word_chr_state[i+1:]
+    
+        if found_letter == True:
+            print("That guess is correct.")
+        else:
+            print("There are no "+ guessed_letter +"'s in the word")
+            INITIAL_GUESSES -=1
+    
+   
+        if(secret_word_chr_state==secret_word):
+            print("Congratulations, the word is: "+secret_word)
+            break
+        
+    if(secret_word_chr_state!=secret_word):
+        print("Sorry, you lost. The secret word was: "+secret_word)
+
+def get_word():
+    """
+    This function returns a secret word that the player is trying
+    to guess in the game.  This function initially has a very small
+    list of words that it can select from to make it easier for you
+    to write and debug the main game playing program.  In Part II of
+    writing this program, you will re-implement this function to
+    select a word from a much larger list by reading a list of words
+    from the file specified by the constant LEXICON_FILE.
+    """
+    f = open(LEXICON_FILE)
+    lines = []
+    for line in f:
+        # removes whitespace characters (\n) from the start and end of the line
+        line = line.strip() 
+        # if the line was only whitespace characters, skip it 
+        if line != "":
+            lines.append(line)
+    random_word = random.choice(lines)
+    return random_word
+
+
+
+def main():
+    """
+    To play the game, we first select the secret word for the
+    player to guess and then play the game using that secret word.
+    """
+    secret_word = get_word()
+    print(secret_word)
+    play_game(secret_word,INITIAL_GUESSES)
+
+
+# This provided line is required at the end of a Python file
+# to call the main() function.
+if __name__ == "__main__":
+    main()
