@@ -1,0 +1,156 @@
+import graphics
+import time
+import random
+import math
+
+CANVAS_WIDTH = 500
+CANVAS_HEIGHT = 600
+PADDLE_Y = CANVAS_HEIGHT - 30
+PADDLE_WIDTH = 60
+PADDLE_HEIGHT = 10
+BALL_RADIUS = 10
+
+BRICK_GAP = 5
+BRICK_WIDTH = (CANVAS_WIDTH-BRICK_GAP*9) / 10
+BRICK_HEIGHT = 10
+
+INITIAL_VELOCITY = 15
+DELAY = 0.05
+TOTAL_BALL=3
+
+def create_bonus_random_ball(canvas,paddle):
+    random_num = random.randint(0,50)
+    bonus_ball_left_x = CANVAS_WIDTH/2 - BALL_RADIUS + random_num
+    bonus_ball_top_y = CANVAS_HEIGHT /2 -BALL_RADIUS + random_num
+    bonus_ball_right_x = bonus_ball_left_x + 2*BALL_RADIUS
+    bonus_ball_bottom_y= bonus_ball_top_y + 2*BALL_RADIUS
+    bonus_ball = canvas.create_oval(bonus_ball_left_x, bonus_ball_top_y, bonus_ball_right_x, bonus_ball_bottom_y,'red')
+    
+def  check_collision(canvas,x,y):
+    #canvas.create_oval(ball_left_x, ball_top_y, ball_left_x +2*BALL_RADIUS, ball_top_y+2*BALL_RADIUS,'blue')
+    objs = canvas.find_overlapping(x, y, x + 2*BALL_RADIUS,y+ 2*BALL_RADIUS)
+    return objs
+    
+def create_paddle(canvas):
+    
+    left_x = 0
+    top_y= PADDLE_Y
+    right_x = left_x+PADDLE_WIDTH
+    bottom_y= top_y+ PADDLE_HEIGHT
+    paddle = canvas.create_rectangle(left_x, top_y, right_x, bottom_y,'black')
+    return paddle
+    
+def create_ball(canvas,paddle,count_ball,total_bricks):
+    x_velocity = INITIAL_VELOCITY
+    y_velocity = INITIAL_VELOCITY
+    
+    ball_left_x = CANVAS_WIDTH/2 - BALL_RADIUS
+    ball_top_y = CANVAS_HEIGHT /2 -BALL_RADIUS
+    ball_right_x = ball_left_x + 2*BALL_RADIUS
+    ball_bottom_y= ball_top_y + 2*BALL_RADIUS
+    ball = canvas.create_oval(ball_left_x, ball_top_y, ball_right_x, ball_bottom_y,'blue')
+    
+   
+    while True:
+        mouse_x = canvas.get_mouse_x()
+        mouse_x= mouse_x -20
+        if(mouse_x<=480):
+            canvas.moveto(paddle, mouse_x, PADDLE_Y )
+        colliders = check_collision(canvas,ball_left_x,  ball_top_y)
+        if (len(colliders)>1):
+            if(colliders[0]==paddle ):
+                if (ball_top_y <= CANVAS_HEIGHT-2*BALL_RADIUS):
+                    y_velocity = -y_velocity
+                else:
+                    canvas.delete(ball)
+                    break
+            else:
+                canvas.delete(colliders[0])
+                y_velocity = -y_velocity
+                total_bricks -=1
+            
+          
+        if (ball_left_x < 10) or ( ball_left_x+2*BALL_RADIUS >= CANVAS_WIDTH):
+            x_velocity = -x_velocity
+        if (ball_top_y < 10):
+            y_velocity = -y_velocity
+        if(ball_top_y >= CANVAS_HEIGHT-2*BALL_RADIUS):
+            
+            canvas.delete(ball)
+            break
+        if(total_bricks<=0):
+            break
+            
+        ball_left_x += x_velocity
+        ball_top_y += y_velocity
+        canvas.moveto(ball, ball_left_x,  ball_top_y)
+        #random_num = random.randint(0,100)
+       # if((random_num>50) and (random_num%5==0)and (random_num%3==0)):
+           # print(random_num)
+            #create_bonus_random_ball(canvas,paddle)
+        time.sleep(DELAY)
+        
+    count_ball -=1
+    if ((count_ball >0)and((total_bricks>0))) :
+        create_ball(canvas,paddle,count_ball,total_bricks)
+    elif (total_bricks<=0):
+        canvas.create_text(CANVAS_WIDTH/2,CANVAS_HEIGHT /2, font='Arial', font_size = 30, text='Congratulations!You Win', color='blue',anchor ="center")
+        canvas.delete(ball)
+    else:
+        canvas.create_text(CANVAS_WIDTH/2,CANVAS_HEIGHT /2, font='Arial', font_size = 50, text='Game Over!', color='blue',anchor ="center")
+    
+    
+
+def create_bricks(canvas,x,y,color):
+    
+    left_x=x
+    top_y=y
+    right_x = left_x+BRICK_WIDTH
+    bottom_y= top_y+ BRICK_HEIGHT
+    
+    rect = canvas.create_rectangle(left_x, top_y, right_x, bottom_y,color)
+    for i in range(9):
+        left_x = left_x+ BRICK_WIDTH + BRICK_GAP
+        top_y=y
+        right_x = left_x+BRICK_WIDTH
+        bottom_y= top_y+ BRICK_HEIGHT
+        rect = canvas.create_rectangle(left_x, top_y, right_x, bottom_y,color)
+    
+    left_x= x 
+    top_y=y+BRICK_HEIGHT + BRICK_GAP
+    right_x = left_x+BRICK_WIDTH
+    bottom_y= top_y+ BRICK_HEIGHT
+    rect = canvas.create_rectangle(left_x, top_y, right_x, bottom_y,color)
+    for i in range(9):
+        left_x = left_x+ BRICK_WIDTH + BRICK_GAP
+        top_y=y+BRICK_HEIGHT + BRICK_GAP
+        right_x = left_x+BRICK_WIDTH
+        bottom_y= top_y+ BRICK_HEIGHT
+        rect = canvas.create_rectangle(left_x, top_y, right_x, bottom_y,color)
+        
+
+def main():
+    canvas = graphics.Canvas(CANVAS_WIDTH,CANVAS_HEIGHT)
+    # TODO: your code here
+    x=0
+    initial_y= 40
+    y=initial_y
+    create_bricks(canvas,x,y,'red')
+    x= 0
+    y=initial_y+(BRICK_HEIGHT + BRICK_GAP)*2
+    create_bricks(canvas,x,y,'orange')
+    x=0
+    y= initial_y+(BRICK_HEIGHT + BRICK_GAP)*4
+    create_bricks(canvas,x,y,'yellow')
+    x=0
+    y= initial_y+(BRICK_HEIGHT + BRICK_GAP)*6
+    create_bricks(canvas,x,y,'green')
+    x=0
+    y=initial_y+ (BRICK_HEIGHT + BRICK_GAP)*8
+    create_bricks(canvas,x,y,'cyan')
+    paddle=create_paddle(canvas)
+    create_ball(canvas,paddle,3,100)
+    
+    
+if __name__ == '__main__':
+    main()
